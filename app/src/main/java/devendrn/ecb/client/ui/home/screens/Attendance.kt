@@ -9,6 +9,7 @@ import devendrn.ecb.client.ui.components.EcLazyValueList
 fun EcAttendance(entries: List<LabeledFraction>, modifier: Modifier = Modifier) {
     EcLazyValueList(
         entries = entries,
-        showPercent = true
+        showPercent = true,
+        modifier = modifier
     )
 }

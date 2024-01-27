@@ -5,6 +5,10 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import devendrn.ecb.client.navigation.EcTopLevelDestination
@@ -42,9 +46,11 @@ fun EcNavBar(
 @Composable
 fun EcNavBarPreview() {
     EcTheme {
+        var selectedItem by remember { mutableStateOf(EcTopLevelDestination.HOME) }
         EcNavBar(
             destinations = EcTopLevelDestination.entries,
-            currentDestination = EcTopLevelDestination.HOME
-        ) { }
+            currentDestination = selectedItem,
+            onNavigateToDestination = { selectedItem = it }
+        )
     }
 }

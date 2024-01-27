@@ -2,6 +2,7 @@ package devendrn.ecb.client.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -10,6 +11,7 @@ import androidx.navigation.navOptions
 import devendrn.ecb.client.R
 import devendrn.ecb.client.data.UiState
 import devendrn.ecb.client.navigation.EcTopLevelDestination
+import devendrn.ecb.client.network.NetworkStatus
 import devendrn.ecb.client.ui.home.HOME_ASSIGNMENTS_ROUTE
 import devendrn.ecb.client.ui.home.HOME_ATTENDANCE_ROUTE
 import devendrn.ecb.client.ui.home.HOME_INTERNALS_ROUTE
@@ -28,25 +30,45 @@ import devendrn.ecb.client.ui.profile.PROFILE_SETTINGS_ROUTE
 import devendrn.ecb.client.ui.profile.PROFILE_START_ROUTE
 import devendrn.ecb.client.ui.profile.ProfileDestination
 import devendrn.ecb.client.ui.profile.navigateToProfile
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @Composable
 fun rememberEcAppState(
+    networkStatus: NetworkStatus,
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController()
 ): EcAppState {
     return remember(
+        networkStatus,
+        coroutineScope,
         navController
     ) {
         EcAppState(
+            networkStatus,
+            coroutineScope,
             navController
         )
     }
 }
 
 class EcAppState(
+    val networkStatus: NetworkStatus,
+    val coroutineScope: CoroutineScope,
     val navController: NavHostController
 ) {
     // TODO - Remove this
     val uiState: UiState = UiState()
+
+    val isLoggedIn = networkStatus.isLoggedIn.
+        map(Boolean::not)
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false,
+        )
 
     val currentDestination: NavDestination?
         @Composable get() = navController

@@ -44,7 +44,7 @@ data class UiState(
         branch = "ECE",
         roll = "B21EC123",
         admissionNo = 210000,
-        picUrl = "hsttps://photos.costume-works.com/thumbs/monster_cat.jpg"
+        picUrl = "https://photos.costume-works.com/thumbs/monster_cat.jpg"
     ),
     val personalDetails: List<Pair<String, String>> = listOf(
         "Name" to "Maxim Nausea",

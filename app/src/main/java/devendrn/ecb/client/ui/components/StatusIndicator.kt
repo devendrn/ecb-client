@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.PauseCircle
 import androidx.compose.material.icons.outlined.SignalWifiConnectedNoInternet4
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,6 +53,18 @@ fun StatusIndicator(
     status: StatusIndicatorState,
     modifier: Modifier = Modifier
 ) {
+    val message: String
+    val iconVector: ImageVector
+    val lastUpdated: String = "Last update: 11:32 AM Dec 24"
+
+    if (status == StatusIndicatorState.OFFLINE) {
+        iconVector = Icons.Outlined.SignalWifiConnectedNoInternet4
+        message = "You're offline!"
+    } else {
+        iconVector = Icons.Outlined.Bedtime
+        message = "Idle"
+    }
+
     val primaryCol: Color = MaterialTheme.colorScheme.primary
     val errorCol: Color = MaterialTheme.colorScheme.error
     val statusCol by animateColorAsState(
@@ -98,7 +111,6 @@ fun StatusIndicator(
         ),
         label = "Breath animation"
     )
-
     Box(
         modifier = modifier
     ) {
@@ -115,8 +127,9 @@ fun StatusIndicator(
         StatusIndicatorPopup(
             isExpanded = statusMenuExpanded,
             color = statusCol,
-            message = "You're offline!",
-            timestamp = "Last update: 11:32 AM Dec 24",
+            icon = iconVector,
+            message = message,
+            timestamp = lastUpdated,
             onClose = { statusMenuExpanded = false }
         )
     }
@@ -124,6 +137,7 @@ fun StatusIndicator(
 
 @Composable
 private fun StatusIndicatorPopup(
+    icon: ImageVector,
     isExpanded: Boolean,
     color: Color,
     message: String,
@@ -163,7 +177,7 @@ private fun StatusIndicatorPopup(
             }
 
             StatusIndicatorPopupContent(
-                icon = Icons.Outlined.SignalWifiConnectedNoInternet4,
+                icon = icon,
                 message = message,
                 timestamp = timestamp,
                 color = color,

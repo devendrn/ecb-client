@@ -2,14 +2,14 @@ package devendrn.ecb.client.network
 
 import android.util.Log
 import devendrn.ecb.client.database.dao.UserDao
-import devendrn.ecb.client.network.model.ClientCredential
-import devendrn.ecb.client.network.model.ClientLoginResponse
+import devendrn.ecb.client.network.model.NetworkCredential
+import devendrn.ecb.client.network.model.NetworkLoginResponse
 import org.jsoup.nodes.Document
 
 class NetworkManager(
     private val userDao: UserDao
 ) {
-    private var loginCredential: ClientCredential
+    private var loginCredential: NetworkCredential
 
     private val client: NetworkClient = NetworkClient()
 
@@ -19,7 +19,7 @@ class NetworkManager(
 
     // TODO - use dao to update/fetch session details
 
-    private fun retrieveSession(): ClientCredential {
+    private fun retrieveSession(): NetworkCredential {
         /*
         return ClientCredential(
             username = userDao.read(USERNAME),
@@ -27,7 +27,7 @@ class NetworkManager(
             sessionId = userDao.read(SESSION)
         )*/
 
-        return ClientCredential(
+        return NetworkCredential(
             username = "",
             password = "",
             sessionId = ""
@@ -35,7 +35,7 @@ class NetworkManager(
     }
 
     private fun updateSession(username: String, password: String, sessionId: String) {
-        loginCredential = ClientCredential(
+        loginCredential = NetworkCredential(
             username = username,
             password = password,
             sessionId = sessionId
@@ -66,7 +66,7 @@ class NetworkManager(
         username: String,
         password: String,
         captcha: String? = null
-    ): ClientLoginResponse {
+    ): NetworkLoginResponse {
         val res = client.post(
             url = NetworkUrl.USER_LOGIN,
             data = mapOf(
@@ -79,23 +79,23 @@ class NetworkManager(
         val url = res.url().toString()
         if (url == NetworkUrl.HOME) {
             updateSession(username, password, res.cookie(SESSION_ID))
-            return ClientLoginResponse.SUCCESS
+            return NetworkLoginResponse.SUCCESS
         } else {
             val form = res.parse().body()
             Log.w("LOGIN ERROR",form.toString())
             return when {
                 form.select("#LoginForm_username_em_").hasText() -> {
-                    ClientLoginResponse.INVALID_USERNAME
+                    NetworkLoginResponse.INVALID_USERNAME
                 }
                 form.select("#LoginForm_password_em_").hasText() -> {
-                    ClientLoginResponse.INVALID_PASSWORD
+                    NetworkLoginResponse.INVALID_PASSWORD
                 }
                 form.select("#LoginForm_captcha_em_").hasText() -> {
-                    ClientLoginResponse.INVALID_CAPTCHA
+                    NetworkLoginResponse.INVALID_CAPTCHA
                 }
                 else -> {
                     // never encountered this case in testing for some reason
-                    ClientLoginResponse.CAPTCHA_REQUIRED
+                    NetworkLoginResponse.CAPTCHA_REQUIRED
                 }
             }
         }

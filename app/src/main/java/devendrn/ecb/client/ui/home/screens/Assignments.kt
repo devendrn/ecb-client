@@ -8,6 +8,7 @@ import devendrn.ecb.client.ui.components.EcLazyValueList
 @Composable
 fun EcAssignments(entries: List<LabeledFraction>, modifier: Modifier = Modifier) {
     EcLazyValueList(
-        entries = entries
+        entries = entries,
+        modifier = modifier
     )
 }

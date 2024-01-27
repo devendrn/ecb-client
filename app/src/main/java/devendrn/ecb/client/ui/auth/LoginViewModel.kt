@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import devendrn.ecb.client.network.NetworkManager
-import devendrn.ecb.client.network.model.ClientLoginResponse
+import devendrn.ecb.client.network.model.NetworkLoginResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -34,15 +34,15 @@ class LoginViewModel(
             when(
                 networkManager.login(uiState.username, uiState.password)
             ) {
-                ClientLoginResponse.SUCCESS -> {
+                NetworkLoginResponse.SUCCESS -> {
                     launch(Dispatchers.Main) {
                         onSuccess()
                     }
                 }
-                ClientLoginResponse.INVALID_USERNAME -> {
+                NetworkLoginResponse.INVALID_USERNAME -> {
                     uiState = uiState.copy(invalidUsername = true, isChecking = false)
                 }
-                ClientLoginResponse.INVALID_PASSWORD -> {
+                NetworkLoginResponse.INVALID_PASSWORD -> {
                     uiState = uiState.copy(invalidPassword = true, isChecking = false)
                 }
                 else -> {

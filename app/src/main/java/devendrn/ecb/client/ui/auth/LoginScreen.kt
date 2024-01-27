@@ -98,7 +98,7 @@ fun EcLoginScreen(
             Text(
                 text = stringResource(R.string.sign_in),
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(vertical = 5.dp)
+                modifier = Modifier.padding(vertical = 10.dp)
             )
             OutlinedTextField(
                 value = username,
@@ -161,7 +161,7 @@ fun EcLoginScreen(
                 ) {
                     Text(stringResource(R.string.forgot_pass))
                 }
-                signInButton(
+                SignInButton(
                     enabled = (username.length > 3 && password.length > 3),
                     isChecking = isChecking,
                     onSignInClick = onSignInClick,
@@ -172,7 +172,7 @@ fun EcLoginScreen(
 }
 
 @Composable
-fun signInButton(
+fun SignInButton(
     enabled: Boolean,
     isChecking: Boolean,
     onSignInClick: () -> Unit
@@ -202,15 +202,15 @@ fun LoginPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             EcLoginScreen(
-                true,
-                "",
-                "",
-                false,
-                false,
-                {},
-                {},
-                {},
-                {}
+                isChecking = false,
+                username = "",
+                password = "",
+                invalidUsername = false,
+                invalidPassword = false,
+                onUsernameUpdate = {},
+                onPasswordUpdate = {},
+                onSignInClick = {},
+                onForgotPassClick = {}
             )
         }
     }

@@ -13,7 +13,8 @@ import devendrn.ecb.client.ui.theme.EcTheme
 fun ECBNews(modifier: Modifier = Modifier) {
     EcEmptyScreen(
         icon = Icons.Outlined.Newspaper,
-        label = "Not Implemented"
+        label = "Not Implemented",
+        modifier = modifier
     )
 }
 

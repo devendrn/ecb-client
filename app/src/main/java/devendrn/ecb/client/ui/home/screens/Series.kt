@@ -40,7 +40,7 @@ fun EcSeries(
     val series = listOf("First", "Second")
     val seriesEntries = listOf(entries1, entries2)
 
-    Column {
+    Column(modifier = modifier) {
         val pagerState = rememberPagerState(
             initialPage = selectedTab,
             pageCount = { seriesEntries.size }

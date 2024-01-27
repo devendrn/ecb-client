@@ -5,16 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import devendrn.ecb.client.ui.EcApp
 import devendrn.ecb.client.ui.theme.EcTheme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainActivityViewModel
@@ -24,7 +17,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (application as EcApplication).container
-        viewModel = MainActivityViewModel(appContainer.ecRepository)
+
+        /*
+        viewModel = MainActivityViewModel(appContainer.ecRepository, appContainer.networkManager)
 
         var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
 
@@ -38,15 +33,13 @@ class MainActivity : ComponentActivity() {
 
         splashScreen.setKeepOnScreenCondition {
             uiState == MainActivityUiState.Loading
-        }
+        }*/
 
         setContent {
             EcTheme(
                 darkTheme = isDarkTheme()
             ) {
-                EcApp(
-                    showLoginScreen = isLoggedIn(uiState)
-                )
+                EcApp(appContainer.networkStatus)
             }
         }
     }
@@ -55,12 +48,4 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun isDarkTheme(): Boolean {
     return isSystemInDarkTheme()
-}
-
-// TODO - Use a better approach to know if logged in
-private fun isLoggedIn(uiState: MainActivityUiState): Boolean {
-    return when(uiState) {
-        MainActivityUiState.Loading -> false
-        is MainActivityUiState.Success -> !uiState.userData.isLoggedIn
-    }
 }

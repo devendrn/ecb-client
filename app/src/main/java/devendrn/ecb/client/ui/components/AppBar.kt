@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,15 +35,19 @@ fun EcAppBar(
     @StringRes titleId: Int,
     profilePicUrl: String,
     showBackButton: Boolean = false,
-    activityUrl: String? = null,
+    isOnline: Boolean,
+    activityUrl: String?,
     showProfilePic: Boolean = true,
     navigateBack: () -> Unit,
-    onIndicatorClick: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    val status = if (activityUrl == null) {
+    val status = if (!isOnline) {
+        StatusIndicatorState.OFFLINE
+    } else if (activityUrl == null) {
         StatusIndicatorState.IDLE
-    } else StatusIndicatorState.LOADING
+    } else {
+        StatusIndicatorState.LOADING
+    }
 
     CenterAlignedTopAppBar(
         title = {
@@ -57,7 +60,6 @@ fun EcAppBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val density = LocalDensity.current
                 AnimatedVisibility(
                     visible = showBackButton,
                     enter = expandHorizontally() + fadeIn(),
@@ -102,9 +104,10 @@ fun EcAppBarPreview() {
             titleId = R.string.app_name,
             showBackButton = false,
             showProfilePic = true,
+            isOnline = true,
+            activityUrl = null,
             navigateBack = { },
             profilePicUrl = "",
-            onIndicatorClick = { },
             onProfileClick = { }
         )
     }

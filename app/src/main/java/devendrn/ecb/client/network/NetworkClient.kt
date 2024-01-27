@@ -13,7 +13,6 @@ class NetworkClient {
         timeout: Int = TIMEOUT_MS,
         sessionId: String? = null
     ): Connection.Response {
-
         val conn = Jsoup.connect(url)
             .userAgent(USER_AGENT)
             .timeout(timeout)

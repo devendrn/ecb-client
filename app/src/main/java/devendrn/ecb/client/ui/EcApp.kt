@@ -6,11 +6,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import devendrn.ecb.client.navigation.EcNavHost
 import devendrn.ecb.client.navigation.EcTopLevelDestination
+import devendrn.ecb.client.network.NetworkStatus
 import devendrn.ecb.client.ui.auth.LOGIN_ROUTE
 import devendrn.ecb.client.ui.components.EcAppBar
 import devendrn.ecb.client.ui.components.EcNavBar
@@ -18,26 +19,24 @@ import devendrn.ecb.client.ui.home.HOME_ROUTE
 
 @Composable
 fun EcApp(
-    appState: EcAppState = rememberEcAppState(),
-    showLoginScreen: Boolean
+    networkStatus: NetworkStatus,
+    appState: EcAppState = rememberEcAppState(
+        networkStatus = networkStatus
+    )
 ) {
     val navController = appState.navController
 
-    val startDestination: String = if (showLoginScreen) {
-        LOGIN_ROUTE
-    } else {
+    val startDestination: String = if (false) {
         HOME_ROUTE
+    } else {
+        LOGIN_ROUTE
     }
 
     val profileDetails = appState.uiState.profileDetails
-
     val topLevelDestinations = appState.topLevelDestinations
 
     val currentTopLevelDestination = appState.currentTopLevelDestination
     val currentBaseLevelDestination = appState.currentBaseLevelDestination
-
-    val showBackButtonInBar = (currentTopLevelDestination == null)
-    val showProfilePicInBar = (currentBaseLevelDestination != EcTopLevelDestination.PROFILE)
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -46,16 +45,18 @@ fun EcApp(
         Scaffold(
             topBar = {
                 if (appState.shouldShowTopBar) {
+                    val showBackButtonInBar = (currentTopLevelDestination == null)
+                    val showProfilePicInBar = (currentBaseLevelDestination != EcTopLevelDestination.PROFILE)
+                    val isOnline by networkStatus.isOnline.collectAsState(initial = false)
                     EcAppBar(
                         titleId = appState.currentTitleId,
+                        isOnline = isOnline,
                         activityUrl = null,
-                        //activityUrl = rootViewModel.activityUrl.collectAsState().value,
                         showBackButton = showBackButtonInBar,
                         showProfilePic = showProfilePicInBar,
                         navigateBack = { navController.navigateUp() },
                         profilePicUrl = profileDetails.picUrl,
-                        onProfileClick = { },
-                        onIndicatorClick = { }
+                        onProfileClick = { }
                     )
                 }
             },
@@ -78,8 +79,3 @@ fun EcApp(
         }
     }
 }
-
-private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: EcTopLevelDestination) =
-    this?.hierarchy?.any {
-        it.route?.contains(destination.name, true) ?: false
-    } ?: false

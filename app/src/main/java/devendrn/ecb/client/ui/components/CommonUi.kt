@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import devendrn.ecb.client.R
 import devendrn.ecb.client.data.LabeledFraction
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardListItem(
     label: String,
@@ -75,12 +74,12 @@ fun CardListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ValueListCard(
+    modifier: Modifier = Modifier,
     label: String,
     value: Int,
     total: Int,
     showPercent: Boolean = false,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     EcCard(
         onClick = onClick,
@@ -167,25 +166,10 @@ fun EcEmptyScreen(
     }
 }
 
-@Composable
-fun EcCard(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        content = content,
-        modifier = modifier
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EcCard(
-    onClick: () -> Unit,
+    onClick: () -> Unit = { },
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {

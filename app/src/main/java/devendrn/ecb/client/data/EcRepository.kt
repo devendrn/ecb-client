@@ -9,6 +9,4 @@ class EcRepository(
     private val networkDataSource: NetworkDataSource
 ) {
     val userData: Flow<UserData> = networkDataSource.userData
-
-
 }
