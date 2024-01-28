@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import devendrn.ecb.client.ui.EcAppState
+import devendrn.ecb.client.ui.auth.LOGIN_ROUTE
 import devendrn.ecb.client.ui.auth.loginScreenRoute
 import devendrn.ecb.client.ui.home.homeScreenRoute
 import devendrn.ecb.client.ui.news.newsScreenRoute
@@ -38,6 +39,9 @@ fun EcNavHost(
         profileScreenRoute(
             onPageClick = { pageRoute ->
                 navController.navigate(pageRoute)
+            },
+            onSignOut = {
+                navController.navigate(LOGIN_ROUTE)
             }
         )
     }

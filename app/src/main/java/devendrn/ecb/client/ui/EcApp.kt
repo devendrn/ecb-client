@@ -19,6 +19,7 @@ import devendrn.ecb.client.ui.home.HOME_ROUTE
 
 @Composable
 fun EcApp(
+    isLoggedIn: Boolean,
     networkStatus: NetworkStatus,
     appState: EcAppState = rememberEcAppState(
         networkStatus = networkStatus
@@ -26,7 +27,7 @@ fun EcApp(
 ) {
     val navController = appState.navController
 
-    val startDestination: String = if (false) {
+    val startDestination: String = if (isLoggedIn) {
         HOME_ROUTE
     } else {
         LOGIN_ROUTE

@@ -2,17 +2,29 @@ package devendrn.ecb.client.ui.profile
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import devendrn.ecb.client.data.EcRepository
 import devendrn.ecb.client.data.ProfileDetails
 import devendrn.ecb.client.data.UiState
+import devendrn.ecb.client.network.NetworkManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProfileViewModel(
+    private val networkManager: NetworkManager,
     private val ecRepository: EcRepository
 ): ViewModel() {
     val profileDetails: ProfileDetails = UiState().profileDetails
 
     var profileData = mutableStateMapOf<String, String>()
         private set
+
+
+    fun signOut() {
+        viewModelScope.launch(Dispatchers.IO) {
+            networkManager.logout()
+        }
+    }
 /*
     init {
         viewModelScope.launch(Dispatchers.IO) {

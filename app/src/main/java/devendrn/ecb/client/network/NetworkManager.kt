@@ -1,7 +1,11 @@
 package devendrn.ecb.client.network
 
 import android.util.Log
+import devendrn.ecb.client.data.PASSWORD
+import devendrn.ecb.client.data.SESSION
+import devendrn.ecb.client.data.USERNAME
 import devendrn.ecb.client.database.dao.UserDao
+import devendrn.ecb.client.database.model.UserEntity
 import devendrn.ecb.client.network.model.NetworkCredential
 import devendrn.ecb.client.network.model.NetworkLoginResponse
 import org.jsoup.nodes.Document
@@ -9,29 +13,16 @@ import org.jsoup.nodes.Document
 class NetworkManager(
     private val userDao: UserDao
 ) {
-    private var loginCredential: NetworkCredential
-
     private val client: NetworkClient = NetworkClient()
+    private var loginCredential: NetworkCredential = NetworkCredential("", "", "")
 
-    init {
-        loginCredential = retrieveSession()
+    private fun updateSessionDatabase(username: String, password: String, sessionId: String) {
+        userDao.upsert(UserEntity(0, USERNAME, username))
+        userDao.upsert(UserEntity(0, PASSWORD, password))
+        userDao.upsert(UserEntity(0, SESSION, sessionId))
     }
-
-    // TODO - use dao to update/fetch session details
-
-    private fun retrieveSession(): NetworkCredential {
-        /*
-        return ClientCredential(
-            username = userDao.read(USERNAME),
-            password = userDao.read(PASSWORD),
-            sessionId = userDao.read(SESSION)
-        )*/
-
-        return NetworkCredential(
-            username = "",
-            password = "",
-            sessionId = ""
-        )
+    private fun clearSessionDatabase() {
+        userDao.clearAll()
     }
 
     private fun updateSession(username: String, password: String, sessionId: String) {
@@ -39,6 +30,14 @@ class NetworkManager(
             username = username,
             password = password,
             sessionId = sessionId
+        )
+    }
+
+    fun retrieveSession() {
+        loginCredential = NetworkCredential(
+            username = userDao.read(USERNAME)?: "",
+            password = userDao.read(PASSWORD)?: "",
+            sessionId = userDao.read(SESSION)?: ""
         )
     }
 
@@ -73,12 +72,14 @@ class NetworkManager(
                 "LoginForm[username]" to username,
                 "LoginForm[password]" to password,
             )
-        )
+        ) ?: return NetworkLoginResponse.NETWORK_ERROR
 
         // login will redirect if successful
         val url = res.url().toString()
         if (url == NetworkUrl.HOME) {
-            updateSession(username, password, res.cookie(SESSION_ID))
+            val sessionId = res.cookie(SESSION_ID)?: ""
+            updateSession(username, password, sessionId)
+            updateSessionDatabase(username, password, sessionId)
             return NetworkLoginResponse.SUCCESS
         } else {
             val form = res.parse().body()
@@ -113,6 +114,7 @@ class NetworkManager(
         if (isSuccess) {
             // TODO - Clear user table
             updateSession("", "", "")
+            clearSessionDatabase()
         }
 
         return isSuccess

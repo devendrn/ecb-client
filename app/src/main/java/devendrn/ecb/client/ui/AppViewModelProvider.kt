@@ -12,6 +12,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             ProfileViewModel(
+                ecApplication().container.networkManager,
                 ecApplication().container.ecRepository
             )
         }

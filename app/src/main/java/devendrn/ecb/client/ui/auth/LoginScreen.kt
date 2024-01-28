@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MultipleStop
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -42,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import devendrn.ecb.client.R
@@ -55,14 +58,36 @@ fun EcLoginScreen(
     password: String,
     invalidUsername: Boolean,
     invalidPassword: Boolean,
+    showErrorDialog: Boolean,
     onUsernameUpdate: (String) -> Unit,
     onPasswordUpdate: (String) -> Unit,
     onSignInClick: () -> Unit,
     onForgotPassClick: () -> Unit,
+    onErrorDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = onErrorDismiss,
+            icon = { Icon(Icons.Outlined.Cancel, contentDescription = null) },
+            title = {
+                Text(stringResource(R.string.network_error))
+            },
+            text = {
+                Text(stringResource(R.string.internet_connectivity_warning), textAlign = TextAlign.Center)
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = onErrorDismiss
+                ) {
+                    Text(stringResource(R.string.okay))
+                }
+            }
+        )
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -207,10 +232,12 @@ fun LoginPreview() {
                 password = "",
                 invalidUsername = false,
                 invalidPassword = false,
+                showErrorDialog = false,
                 onUsernameUpdate = {},
                 onPasswordUpdate = {},
                 onSignInClick = {},
-                onForgotPassClick = {}
+                onForgotPassClick = {},
+                onErrorDismiss = {}
             )
         }
     }

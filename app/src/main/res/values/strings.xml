@@ -34,4 +34,7 @@
     <string name="not_implemented">Not implemented</string>
     <string name="news_incomplete">TKMCE/KTU notifications will appear here</string>
     <string name="app_description">ECB Client stores your login details securely and uses it to get content from your etlab account.</string>
+    <string name="network_error">Network error</string>
+    <string name="internet_connectivity_warning">Make sure you are connected to the internet.</string>
+    <string name="okay">Okay</string>
 </resources>

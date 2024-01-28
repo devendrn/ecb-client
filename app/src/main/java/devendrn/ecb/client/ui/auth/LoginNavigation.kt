@@ -26,15 +26,20 @@ fun NavGraphBuilder.loginScreenRoute(
             isChecking = loginUiState.isChecking,
             invalidUsername = loginUiState.invalidUsername,
             invalidPassword = loginUiState.invalidPassword,
+            showErrorDialog = loginUiState.showNetworkErrorDialog,
             onUsernameUpdate = loginViewModel::updateUsername,
             onPasswordUpdate = loginViewModel::updatePassword,
             onForgotPassClick = {
+                // TODO - remove this temporary bypass
                 onLoginSuccess()
             },
             onSignInClick = {
                 loginViewModel.submitLogin {
                     onLoginSuccess()
                 }
+            },
+            onErrorDismiss = {
+                loginViewModel.closeNetworkErrorDialog()
             }
         )
     }

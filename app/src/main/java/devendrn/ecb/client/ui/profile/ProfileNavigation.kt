@@ -21,7 +21,8 @@ const val PROFILE_INFO_ROUTE = "profile/info"
 fun NavController.navigateToProfile(topLevelNavOptions: NavOptions) = navigate(PROFILE_ROUTE, topLevelNavOptions)
 
 fun NavGraphBuilder.profileScreenRoute(
-    onPageClick: (String) -> Unit
+    onPageClick: (String) -> Unit,
+    onSignOut: () -> Unit,
 ) {
     navigation(
         route = PROFILE_ROUTE,
@@ -40,7 +41,10 @@ fun NavGraphBuilder.profileScreenRoute(
                         ProfileDestination.ABOUT -> onPageClick(PROFILE_ABOUT_ROUTE)
                     }
                 },
-                onSignOutClick = { },
+                onSignOutClick = {
+                    profileViewModel.signOut()
+                    onSignOut()
+                },
                 onChangePassClick = { },
             )
         }

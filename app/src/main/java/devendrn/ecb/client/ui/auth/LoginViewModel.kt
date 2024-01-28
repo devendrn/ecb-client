@@ -26,6 +26,10 @@ class LoginViewModel(
         uiState = uiState.copy(invalidUsername = false)
     }
 
+    fun closeNetworkErrorDialog() {
+        uiState = uiState.copy(showNetworkErrorDialog = false)
+    }
+
     fun submitLogin(
         onSuccess: () -> Unit
     ) {
@@ -44,6 +48,9 @@ class LoginViewModel(
                 }
                 NetworkLoginResponse.INVALID_PASSWORD -> {
                     uiState = uiState.copy(invalidPassword = true, isChecking = false)
+                }
+                NetworkLoginResponse.NETWORK_ERROR -> {
+                    uiState = uiState.copy(showNetworkErrorDialog = true, isChecking = false)
                 }
                 else -> {
                     uiState = uiState.copy(isChecking = false)

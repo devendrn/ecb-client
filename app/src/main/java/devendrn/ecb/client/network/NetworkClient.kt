@@ -13,6 +13,8 @@ class NetworkClient {
         timeout: Int = TIMEOUT_MS,
         sessionId: String? = null
     ): Connection.Response {
+        println("ATTEMPTING TO GET: $url")
+
         val conn = Jsoup.connect(url)
             .userAgent(USER_AGENT)
             .timeout(timeout)
@@ -30,7 +32,7 @@ class NetworkClient {
         data: Map<String, String>,
         timeout: Int = TIMEOUT_MS,
         sessionId: String? = null
-    ): Connection.Response {
+    ): Connection.Response? {
         val conn = Jsoup.connect(url)
             .userAgent(USER_AGENT)
             .timeout(timeout)
@@ -44,6 +46,10 @@ class NetworkClient {
             conn.cookie(SESSION_ID, sessionId)
         }
 
-        return conn.execute()
+        return try {
+            conn.execute()
+        } catch (e: Exception) {  // network error
+            null
+        }
     }
 }

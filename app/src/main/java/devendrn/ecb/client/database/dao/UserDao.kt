@@ -11,7 +11,7 @@ interface UserDao {
     fun upsert(userEntityDetail: UserEntity)
 
     @Query("SELECT value FROM session_details WHERE data = :data")
-    fun read(data: String): String
+    fun read(data: String): String?
 
     @Query("DELETE FROM session_details")
     fun clearAll()
