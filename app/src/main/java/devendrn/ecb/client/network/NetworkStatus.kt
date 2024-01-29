@@ -7,7 +7,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class NetworkStatus(
@@ -15,10 +14,6 @@ class NetworkStatus(
 ) {
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-    val isLoggedIn: Flow<Boolean> = flow {
-        emit(false)
-    }
 
     val isOnline: Flow<Boolean> = callbackFlow {
         val callback = object: ConnectivityManager.NetworkCallback() {
@@ -36,8 +31,4 @@ class NetworkStatus(
             connectivityManager.unregisterNetworkCallback(callback)
         }
     }.distinctUntilChanged()
-
-    val activityUrl: Flow<String?> = flow {
-        emit(null)
-    }
 }

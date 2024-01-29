@@ -1,20 +1,12 @@
 package devendrn.ecb.client.network
 
-import devendrn.ecb.client.model.UserData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import devendrn.ecb.client.network.scrapper.parser.getProfileData
 
 class NetworkDataSource(
     private val networkManager: NetworkManager
 ) {
-    val userData: Flow<UserData> = flow {
-        emit(UserData(false))
-    }
-
-    //private val scrapper: Scrapper = Scrapper(networkManager)
-
-    fun getProfileDetails() {
-
+    fun getProfileDetails(): List<Pair<String, String>> {
+        return networkManager.getProfileData().map { it.toPair() }
     }
 
     fun getSubjectDetails() {

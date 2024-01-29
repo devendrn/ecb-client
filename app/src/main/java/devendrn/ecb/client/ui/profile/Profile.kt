@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import devendrn.ecb.client.R
 import devendrn.ecb.client.data.ProfileDetails
+import devendrn.ecb.client.network.NetworkUrl
 import devendrn.ecb.client.ui.components.CardListItem
 import devendrn.ecb.client.ui.components.EcCard
 
@@ -118,7 +119,7 @@ fun LoginActionsItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = "tkmce.etlab.in: $username",
+                text = "${NetworkUrl.DOMAIN}: $username",
                 modifier = Modifier.padding(bottom = 10.dp)
             )
             Row(

@@ -14,7 +14,7 @@ import devendrn.ecb.client.database.model.UserEntity
 @Database(
     entities = [UserEntity::class, SubjectEntity::class, ProfileEntity::class],
     exportSchema = false,
-    version = 2
+    version = 3
 )
 abstract class EcDatabase: RoomDatabase() {
     abstract fun subjectDao(): SubjectDao
@@ -29,7 +29,6 @@ abstract class EcDatabase: RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, EcDatabase::class.java, "ec_db")
                     .fallbackToDestructiveMigration()
-                    //.allowMainThreadQueries()  // TODO: avoid this if possible
                     .build()
                     .also { Instance = it }
             }

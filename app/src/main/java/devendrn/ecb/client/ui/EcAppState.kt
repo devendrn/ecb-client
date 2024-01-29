@@ -31,9 +31,6 @@ import devendrn.ecb.client.ui.profile.PROFILE_START_ROUTE
 import devendrn.ecb.client.ui.profile.ProfileDestination
 import devendrn.ecb.client.ui.profile.navigateToProfile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 @Composable
 fun rememberEcAppState(
@@ -61,14 +58,6 @@ class EcAppState(
 ) {
     // TODO - Remove this
     val uiState: UiState = UiState()
-
-    val isLoggedIn = networkStatus.isLoggedIn.
-        map(Boolean::not)
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false,
-        )
 
     val currentDestination: NavDestination?
         @Composable get() = navController

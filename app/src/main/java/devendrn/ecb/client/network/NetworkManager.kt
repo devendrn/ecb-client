@@ -16,21 +16,15 @@ class NetworkManager(
     private val client: NetworkClient = NetworkClient()
     private var loginCredential: NetworkCredential = NetworkCredential("", "", "")
 
-    private fun updateSessionDatabase(username: String, password: String, sessionId: String) {
-        userDao.upsert(UserEntity(0, USERNAME, username))
-        userDao.upsert(UserEntity(0, PASSWORD, password))
-        userDao.upsert(UserEntity(0, SESSION, sessionId))
-    }
-    private fun clearSessionDatabase() {
-        userDao.clearAll()
-    }
-
     private fun updateSession(username: String, password: String, sessionId: String) {
         loginCredential = NetworkCredential(
             username = username,
             password = password,
             sessionId = sessionId
         )
+        userDao.upsert(UserEntity(USERNAME, username))
+        userDao.upsert(UserEntity(PASSWORD, password))
+        userDao.upsert(UserEntity(SESSION, sessionId))
     }
 
     fun retrieveSession() {
@@ -53,9 +47,8 @@ class NetworkManager(
 
         // check if login is required
         if (res.url().toString() == NetworkUrl.USER_LOGIN) {
+            println("TRIED TO GET PAGE BUT SESSION EXPIRED!")
             /* TODO  Handle login */
-        }  else {
-
         }
 
         return res.parse()
@@ -64,7 +57,7 @@ class NetworkManager(
     fun login(
         username: String,
         password: String,
-        captcha: String? = null
+        //captcha: String? = null
     ): NetworkLoginResponse {
         val res = client.post(
             url = NetworkUrl.USER_LOGIN,
@@ -79,7 +72,6 @@ class NetworkManager(
         if (url == NetworkUrl.HOME) {
             val sessionId = res.cookie(SESSION_ID)?: ""
             updateSession(username, password, sessionId)
-            updateSessionDatabase(username, password, sessionId)
             return NetworkLoginResponse.SUCCESS
         } else {
             val form = res.parse().body()
@@ -103,20 +95,14 @@ class NetworkManager(
     }
 
     fun logout(): Boolean {
+        updateSession("", "", "")
+
         val res = client.get(
             url = NetworkUrl.USER_LOGOUT,
             sessionId = loginCredential.sessionId
         )
 
         // logout will redirect to login page if successful
-        val isSuccess = res.url().toString() == NetworkUrl.USER_LOGIN
-
-        if (isSuccess) {
-            // TODO - Clear user table
-            updateSession("", "", "")
-            clearSessionDatabase()
-        }
-
-        return isSuccess
+        return res.url().toString() == NetworkUrl.USER_LOGIN
     }
 }
