@@ -1,5 +1,7 @@
 package devendrn.ecb.client.network
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import devendrn.ecb.client.data.PASSWORD
 import devendrn.ecb.client.data.SESSION
@@ -8,13 +10,25 @@ import devendrn.ecb.client.database.dao.UserDao
 import devendrn.ecb.client.database.model.UserEntity
 import devendrn.ecb.client.network.model.NetworkCredential
 import devendrn.ecb.client.network.model.NetworkLoginResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.jsoup.nodes.Document
+import java.text.SimpleDateFormat
 
 class NetworkManager(
+    private val context: Context,
     private val userDao: UserDao
 ) {
     private val client: NetworkClient = NetworkClient()
     private var loginCredential: NetworkCredential = NetworkCredential("", "", "")
+
+    val activity = client.activityUrl
+    val isOnline = NetworkStatus(context).isOnline
+
+    @SuppressLint("SimpleDateFormat")
+    val lastUpdateTimeString: Flow<String> = client.lastUpdateTime.map { time ->
+        SimpleDateFormat("hh:mm a MMM dd").format(time)
+    }
 
     private fun updateSession(username: String, password: String, sessionId: String) {
         loginCredential = NetworkCredential(
@@ -47,7 +61,7 @@ class NetworkManager(
 
         // check if login is required
         if (res.url().toString() == NetworkUrl.USER_LOGIN) {
-            println("TRIED TO GET PAGE BUT SESSION EXPIRED!")
+            Log.d("NETWORK MANAGER","GET PAGE: SESSION EXPIRED!")
             /* TODO  Handle login */
         }
 

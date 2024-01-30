@@ -4,14 +4,12 @@ import android.content.Context
 import devendrn.ecb.client.database.EcDatabase
 import devendrn.ecb.client.network.NetworkDataSource
 import devendrn.ecb.client.network.NetworkManager
-import devendrn.ecb.client.network.NetworkStatus
 
 class AppContainer(private val context: Context) {
 
-    val networkStatus: NetworkStatus = NetworkStatus(context)
-
     val networkManager: NetworkManager by lazy {
         NetworkManager(
+            context = context,
             userDao = EcDatabase.getDatabase(context).userDao()
         )
     }

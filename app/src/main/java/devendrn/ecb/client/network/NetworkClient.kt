@@ -4,6 +4,8 @@ import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import java.util.Calendar
+import java.util.Date
 
 private const val USER_AGENT = "Mozilla"
 private const val TIMEOUT_MS = 20000
@@ -11,6 +13,15 @@ const val SESSION_ID = "TKMSESSIONID"
 
 class NetworkClient {
     val activityUrl: MutableStateFlow<String?> = MutableStateFlow(null)
+
+    // TODO - store last update time in user database
+    val lastUpdateTime: MutableStateFlow<Date> = MutableStateFlow(
+        Calendar.getInstance().time
+    )
+
+    private fun updateLastTime() {
+        lastUpdateTime.value = Calendar.getInstance().time
+    }
 
     fun get(
         url: String,
@@ -31,6 +42,7 @@ class NetworkClient {
 
         val response = conn.execute()
 
+        updateLastTime()
         activityUrl.value = null
         return response
     }
@@ -63,6 +75,7 @@ class NetworkClient {
             null
         }
 
+        updateLastTime()
         activityUrl.value = null
         return response
     }

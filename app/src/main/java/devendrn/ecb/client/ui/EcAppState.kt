@@ -11,7 +11,7 @@ import androidx.navigation.navOptions
 import devendrn.ecb.client.R
 import devendrn.ecb.client.data.UiState
 import devendrn.ecb.client.navigation.EcTopLevelDestination
-import devendrn.ecb.client.network.NetworkStatus
+import devendrn.ecb.client.network.NetworkManager
 import devendrn.ecb.client.ui.home.HOME_ASSIGNMENTS_ROUTE
 import devendrn.ecb.client.ui.home.HOME_ATTENDANCE_ROUTE
 import devendrn.ecb.client.ui.home.HOME_INTERNALS_ROUTE
@@ -34,17 +34,17 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun rememberEcAppState(
-    networkStatus: NetworkStatus,
+    networkManager: NetworkManager,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController()
 ): EcAppState {
     return remember(
-        networkStatus,
+        networkManager,
         coroutineScope,
         navController
     ) {
         EcAppState(
-            networkStatus,
+            networkManager,
             coroutineScope,
             navController
         )
@@ -52,7 +52,7 @@ fun rememberEcAppState(
 }
 
 class EcAppState(
-    val networkStatus: NetworkStatus,
+    val networkManager: NetworkManager,
     val coroutineScope: CoroutineScope,
     val navController: NavHostController
 ) {

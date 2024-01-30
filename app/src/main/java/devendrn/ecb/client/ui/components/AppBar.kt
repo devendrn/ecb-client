@@ -35,20 +35,13 @@ fun EcAppBar(
     @StringRes titleId: Int,
     profilePicUrl: String,
     showBackButton: Boolean = false,
+    showProfilePic: Boolean = true,
     isOnline: Boolean,
     activityUrl: String?,
-    showProfilePic: Boolean = true,
+    lastUpdateTime: String,
     navigateBack: () -> Unit,
     onProfileClick: () -> Unit
 ) {
-    val status = if (!isOnline) {
-        StatusIndicatorState.OFFLINE
-    } else if (activityUrl == null) {
-        StatusIndicatorState.IDLE
-    } else {
-        StatusIndicatorState.LOADING
-    }
-
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -73,7 +66,10 @@ fun EcAppBar(
                     }
                 }
                 StatusIndicator(
-                    status
+                    isOnline = isOnline,
+                    activity = activityUrl,
+                    lastUpdate = lastUpdateTime
+
                 )
             }
         },
@@ -106,8 +102,9 @@ fun EcAppBarPreview() {
             showProfilePic = true,
             isOnline = true,
             activityUrl = null,
-            navigateBack = { },
+            lastUpdateTime = "",
             profilePicUrl = "",
+            navigateBack = { },
             onProfileClick = { }
         )
     }

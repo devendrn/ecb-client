@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import devendrn.ecb.client.navigation.EcNavHost
 import devendrn.ecb.client.navigation.EcTopLevelDestination
-import devendrn.ecb.client.network.NetworkStatus
+import devendrn.ecb.client.network.NetworkManager
 import devendrn.ecb.client.ui.auth.LOGIN_ROUTE
 import devendrn.ecb.client.ui.components.EcAppBar
 import devendrn.ecb.client.ui.components.EcNavBar
@@ -20,9 +20,9 @@ import devendrn.ecb.client.ui.home.HOME_ROUTE
 @Composable
 fun EcApp(
     isLoggedIn: Boolean,
-    networkStatus: NetworkStatus,
+    networkManager: NetworkManager,
     appState: EcAppState = rememberEcAppState(
-        networkStatus = networkStatus
+        networkManager = networkManager
     )
 ) {
     val navController = appState.navController
@@ -48,11 +48,14 @@ fun EcApp(
                 if (appState.shouldShowTopBar) {
                     val showBackButtonInBar = (currentTopLevelDestination == null)
                     val showProfilePicInBar = (currentBaseLevelDestination != EcTopLevelDestination.PROFILE)
-                    val isOnline by networkStatus.isOnline.collectAsState(initial = false)
+                    val activity by networkManager.activity.collectAsState(initial = null)
+                    val isOnline by networkManager.isOnline.collectAsState(initial = true)
+                    val lastUpdate by networkManager.lastUpdateTimeString.collectAsState(initial = "")
                     EcAppBar(
                         titleId = appState.currentTitleId,
                         isOnline = isOnline,
-                        activityUrl = null,
+                        activityUrl = activity,
+                        lastUpdateTime = lastUpdate,
                         showBackButton = showBackButtonInBar,
                         showProfilePic = showProfilePicInBar,
                         navigateBack = { navController.navigateUp() },

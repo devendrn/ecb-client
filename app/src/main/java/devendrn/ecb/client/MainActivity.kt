@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 EcApp(
                     isLoggedIn = viewModel.isLoggedIn.collectAsState().value,
-                    networkStatus = appContainer.networkStatus
+                    networkManager = appContainer.networkManager
                 )
             }
         }

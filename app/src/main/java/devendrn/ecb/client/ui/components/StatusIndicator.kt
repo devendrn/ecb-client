@@ -18,9 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Autorenew
 import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.PauseCircle
-import androidx.compose.material.icons.outlined.SignalWifiConnectedNoInternet4
+import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -44,46 +44,42 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import devendrn.ecb.client.ui.theme.EcTheme
 
-enum class StatusIndicatorState{
-    LOADING, OFFLINE, IDLE
-}
-
 @Composable
 fun StatusIndicator(
-    status: StatusIndicatorState,
+    isOnline: Boolean,
+    activity: String?,
+    lastUpdate: String,
     modifier: Modifier = Modifier
 ) {
     val message: String
     val iconVector: ImageVector
-    val lastUpdated: String = "Last update: 11:32 AM Dec 24"
 
-    if (status == StatusIndicatorState.OFFLINE) {
-        iconVector = Icons.Outlined.SignalWifiConnectedNoInternet4
-        message = "You're offline!"
-    } else {
+    val isLoading = activity != null
+    if (isLoading) {
+        iconVector = Icons.Outlined.Autorenew
+        message = "student/attendance..."
+    } else if (isOnline) {
         iconVector = Icons.Outlined.Bedtime
         message = "Idle"
+    } else {
+        iconVector = Icons.Outlined.WifiOff
+        message = "You're Offline!"
     }
 
     val primaryCol: Color = MaterialTheme.colorScheme.primary
     val errorCol: Color = MaterialTheme.colorScheme.error
+
     val statusCol by animateColorAsState(
-        targetValue = when(status) {
-            StatusIndicatorState.OFFLINE -> errorCol
-            else -> primaryCol
-        },
+        targetValue = if (!isOnline) errorCol else primaryCol,
         animationSpec = tween(
             durationMillis = 500,
             easing = LinearOutSlowInEasing
         ),
         label = "status color"
     )
+
     val trackCol by animateColorAsState(
-        targetValue = when(status) {
-            StatusIndicatorState.OFFLINE -> errorCol
-            StatusIndicatorState.LOADING -> Color.Transparent
-            StatusIndicatorState.IDLE -> primaryCol
-        },
+        targetValue = if (isLoading) Color.Transparent else statusCol,
         animationSpec = tween(
             durationMillis = 500,
             easing = LinearOutSlowInEasing
@@ -91,12 +87,7 @@ fun StatusIndicator(
         label = "track color"
     )
 
-    var statusMenuExpanded by remember { mutableStateOf(false) }
-
-    val targetWidth = if (status == StatusIndicatorState.OFFLINE) {
-        7f
-    } else 3f
-
+    val targetWidth = if (!isOnline) 7f else 3f
     val infiniteTransition = rememberInfiniteTransition("breathing transition")
     val width by infiniteTransition.animateFloat(
         initialValue = 3f,
@@ -111,6 +102,9 @@ fun StatusIndicator(
         ),
         label = "Breath animation"
     )
+
+    var statusMenuExpanded by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
     ) {
@@ -129,7 +123,7 @@ fun StatusIndicator(
             color = statusCol,
             icon = iconVector,
             message = message,
-            timestamp = lastUpdated,
+            timestamp = lastUpdate,
             onClose = { statusMenuExpanded = false }
         )
     }
@@ -226,7 +220,7 @@ private fun StatusIndicatorPopupContent(
                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
             )
             Text(
-                text = timestamp,
+                text = "Last update: $timestamp",
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -238,9 +232,9 @@ private fun StatusIndicatorPopupContent(
 fun StatusIndicatorPreview() {
     EcTheme {
         Row {
-            StatusIndicator(status = StatusIndicatorState.IDLE)
-            StatusIndicator(status = StatusIndicatorState.OFFLINE)
-            StatusIndicator(status = StatusIndicatorState.LOADING)
+            StatusIndicator(true, null, "")
+            StatusIndicator(false, null, "")
+            StatusIndicator(true, "url", "")
         }
     }
 }
@@ -250,10 +244,10 @@ fun StatusIndicatorPreview() {
 fun StatusPopupPreviewError() {
     EcTheme {
         StatusIndicatorPopupContent(
-            icon = Icons.Outlined.SignalWifiConnectedNoInternet4,
+            icon = Icons.Outlined.WifiOff,
             color = MaterialTheme.colorScheme.error,
             message = "You're offline!",
-            timestamp = "Last update: 11:43 AM June 14"
+            timestamp = "11:43 AM June 14"
         )
     }
 }
@@ -263,10 +257,23 @@ fun StatusPopupPreviewError() {
 fun StatusPopupPreviewIdle() {
     EcTheme {
         StatusIndicatorPopupContent(
-            icon = Icons.Outlined.PauseCircle,
+            icon = Icons.Outlined.Bedtime,
             color = MaterialTheme.colorScheme.primary,
             message = "Idle (Connected)",
-            timestamp = "Last update: 1:43 PM Dec 14"
+            timestamp = "1:43 PM Dec 14"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun StatusPopupPreviewLoading() {
+    EcTheme {
+        StatusIndicatorPopupContent(
+            icon = Icons.Outlined.Autorenew,
+            color = MaterialTheme.colorScheme.primary,
+            message = "students/academics",
+            timestamp = "1:43 PM Dec 14"
         )
     }
 }
