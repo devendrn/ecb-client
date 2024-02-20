@@ -1,13 +1,11 @@
 package devendrn.ecb.client.ui.profile
 
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import devendrn.ecb.client.ui.AppViewModelProvider
 import devendrn.ecb.client.ui.profile.screens.EcAbout
 import devendrn.ecb.client.ui.profile.screens.EcDetails
 import devendrn.ecb.client.ui.profile.screens.EcSettings
@@ -24,16 +22,15 @@ fun NavController.navigateToProfile(topLevelNavOptions: NavOptions) = navigate(P
 fun NavGraphBuilder.profileScreenRoute(
     onPageClick: (String) -> Unit,
     onSignOut: () -> Unit,
+    profileViewModel: ProfileViewModel
 ) {
     navigation(
         route = PROFILE_ROUTE,
         startDestination = PROFILE_START_ROUTE
     ) {
         composable(route = PROFILE_START_ROUTE) {
-            val profileViewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
             EcProfile(
-                profile = profileViewModel.profileCardDetails,
+                profile = profileViewModel.profileCardDetails.collectAsState().value,
                 onItemClick = { destination ->
                     when(destination) {
                         ProfileDestination.INFO -> {
@@ -55,9 +52,7 @@ fun NavGraphBuilder.profileScreenRoute(
             EcSettings()
         }
         composable(route = PROFILE_INFO_ROUTE) {
-            val profileViewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
             val profileDetailsState = profileViewModel.profileDetails.collectAsState(initial = listOf())
-
             EcDetails(profileDetailsState.value)
         }
         composable(route = PROFILE_ABOUT_ROUTE) {

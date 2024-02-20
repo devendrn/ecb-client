@@ -17,11 +17,13 @@ class AppContainer(private val context: Context) {
     private val localDataSource: LocalDataSource by lazy {
         LocalDataSource(
             profileDao = EcDatabase.getDatabase(context).profileDao(),
-            subjectDao = EcDatabase.getDatabase(context).subjectDao()
+            subjectDao = EcDatabase.getDatabase(context).subjectDao(),
+            timetableDao = EcDatabase.getDatabase(context).timetableDao()
         )
     }
 
     private val networkDataSource: NetworkDataSource = NetworkDataSource(networkManager)
 
     val ecRepository: EcRepository = EcRepository(localDataSource, networkDataSource)
+
 }

@@ -3,6 +3,7 @@ package devendrn.ecb.client.ui.home
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Assignment
+import androidx.compose.material.icons.outlined.FactCheck
 import androidx.compose.material.icons.outlined.Grading
 import androidx.compose.material.icons.outlined.HowToReg
 import androidx.compose.material.icons.outlined.ListAlt
@@ -16,5 +17,6 @@ enum class HomeDestination(
     ATTENDANCE(R.string.attendance, Icons.Outlined.HowToReg),
     SERIES(R.string.series, Icons.Outlined.Grading),
     ASSIGNMENTS(R.string.assignments, Icons.Outlined.Assignment),
-    INTERNALS(R.string.internals, Icons.Outlined.ListAlt)
+    INTERNALS(R.string.internals, Icons.Outlined.ListAlt),
+    KTU_RESULTS(R.string.ktu_results, Icons.Outlined.FactCheck)
 }

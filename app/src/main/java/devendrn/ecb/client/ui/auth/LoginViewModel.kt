@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import devendrn.ecb.client.data.EcRepository
 import devendrn.ecb.client.network.NetworkManager
 import devendrn.ecb.client.network.model.NetworkLoginResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
+    private val ecRepository: EcRepository,
     private val networkManager: NetworkManager
 ): ViewModel() {
     var uiState by mutableStateOf(LoginState())
@@ -39,6 +41,7 @@ class LoginViewModel(
                 networkManager.login(uiState.username, uiState.password)
             ) {
                 NetworkLoginResponse.SUCCESS -> {
+                    ecRepository.firstStartupUpdate()
                     launch(Dispatchers.Main) {
                         onSuccess()
                     }

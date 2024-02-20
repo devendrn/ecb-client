@@ -1,25 +1,27 @@
 package devendrn.ecb.client.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "subjects")
 data class SubjectEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-
-    val name: String,
+    @PrimaryKey
     val code: String,
+    val name: String,
     val abbr: String,
 
-    val attendanceValue: Int,
-    val attendanceTotal: Int,
+    val attendance: String,
+    val internal: String,
 
-    val series1Value: Int,
-    val series1Total: Int,
-    val series2Value: Int,
-    val series2Total: Int,
-
-    val internalValue: Int,
-    val internalTotal: Int
+    val series1: String,
+    val series2: String,
+    val series3: String,
+    val series4: String,
 )
+
+data class SubjectAttendance(
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "attendance") val value: String
+)
+

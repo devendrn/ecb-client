@@ -2,25 +2,6 @@ package devendrn.ecb.client.data
 
 // dirty test code - should be removed!
 
-enum class Day(val id: Int, val word: String) {
-    MON(1,"Monday"),
-    TUE(2,"Tuesday"),
-    WED(3,"Wednesday"),
-    THU(4,"Thursday"),
-    FRI(5,"Friday"),
-    SAT(6,"Saturday"),
-    SUN(7,"Sunday");
-
-    fun firstChar(): Char {
-        return word.first()
-    }
-}
-
-data class TimeTable(
-    val currentDay: Day,
-    val map: Map<Day, List<String>>
-)
-
 data class LabeledFraction(
     val label: String,
     val value: Int,
@@ -53,16 +34,6 @@ data class UiState(
         "Department" to "Department of Cat Engineering 2021",
         "Admission No" to "21000",
         "University Reg No" to "TKM21CAT15"
-    ),
-    val timeTable: TimeTable = TimeTable(
-        currentDay = Day.WED,
-        mapOf(
-            Day.MON to listOf("DSP", "DSP", "LIC", "MOE", "ADC", "CS"),
-            Day.TUE to listOf("ADC", "ADC", "DM", "ADC", "MOE", "DSP"),
-            Day.WED to listOf("MOE", "LIC", "ADC", "CS", "DSP", "DM"),
-            Day.THU to listOf("CS", "ADC", "LIC", "LIC", "MOE", "DSP"),
-            Day.FRI to listOf("DM", "ADC", "MOE", "MOE", "ADC", "ADC")
-        )
     ),
     val isTimetableExpanded: Boolean = false,
     val navIndex: Int = 0,

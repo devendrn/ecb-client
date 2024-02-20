@@ -2,24 +2,25 @@ package devendrn.ecb.client.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import devendrn.ecb.client.R
-import devendrn.ecb.client.data.UiState
-import devendrn.ecb.client.navigation.EcTopLevelDestination
+import devendrn.ecb.client.data.EcRepository
 import devendrn.ecb.client.network.NetworkManager
+import devendrn.ecb.client.ui.auth.LOGIN_ROUTE
 import devendrn.ecb.client.ui.home.HOME_ASSIGNMENTS_ROUTE
 import devendrn.ecb.client.ui.home.HOME_ATTENDANCE_ROUTE
 import devendrn.ecb.client.ui.home.HOME_INTERNALS_ROUTE
+import devendrn.ecb.client.ui.home.HOME_KTU_RESULTS_ROUTE
 import devendrn.ecb.client.ui.home.HOME_ROUTE
 import devendrn.ecb.client.ui.home.HOME_SERIES_ROUTE
 import devendrn.ecb.client.ui.home.HOME_START_ROUTE
 import devendrn.ecb.client.ui.home.HomeDestination
 import devendrn.ecb.client.ui.home.navigateToHome
+import devendrn.ecb.client.ui.navigation.EcTopLevelDestination
 import devendrn.ecb.client.ui.news.NEWS_ROUTE
 import devendrn.ecb.client.ui.news.NEWS_START_ROUTE
 import devendrn.ecb.client.ui.news.navigateToNews
@@ -30,22 +31,21 @@ import devendrn.ecb.client.ui.profile.PROFILE_SETTINGS_ROUTE
 import devendrn.ecb.client.ui.profile.PROFILE_START_ROUTE
 import devendrn.ecb.client.ui.profile.ProfileDestination
 import devendrn.ecb.client.ui.profile.navigateToProfile
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun rememberEcAppState(
     networkManager: NetworkManager,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    ecRepository: EcRepository,
     navController: NavHostController = rememberNavController()
 ): EcAppState {
     return remember(
         networkManager,
-        coroutineScope,
+        ecRepository,
         navController
     ) {
         EcAppState(
             networkManager,
-            coroutineScope,
+            ecRepository,
             navController
         )
     }
@@ -53,12 +53,9 @@ fun rememberEcAppState(
 
 class EcAppState(
     val networkManager: NetworkManager,
-    val coroutineScope: CoroutineScope,
+    val ecRepository: EcRepository,
     val navController: NavHostController
 ) {
-    // TODO - Remove this
-    val uiState: UiState = UiState()
-
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
@@ -100,6 +97,7 @@ class EcAppState(
                 HOME_SERIES_ROUTE -> HomeDestination.SERIES.titleId
                 HOME_ATTENDANCE_ROUTE -> HomeDestination.ATTENDANCE.titleId
                 HOME_INTERNALS_ROUTE -> HomeDestination.INTERNALS.titleId
+                HOME_KTU_RESULTS_ROUTE -> HomeDestination.KTU_RESULTS.titleId
                 PROFILE_ABOUT_ROUTE -> ProfileDestination.ABOUT.titleId
                 PROFILE_SETTINGS_ROUTE -> ProfileDestination.SETTINGS.titleId
                 PROFILE_INFO_ROUTE -> ProfileDestination.INFO.titleId
@@ -122,4 +120,13 @@ class EcAppState(
         }
     }
 
+    fun navigateToHomeFromLogin() {
+        navController.popBackStack(LOGIN_ROUTE, true)
+        navController.navigateToHome(
+            navOptions {
+                launchSingleTop = true
+                restoreState = true
+            }
+        )
+    }
 }

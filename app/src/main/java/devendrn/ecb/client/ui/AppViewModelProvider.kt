@@ -6,6 +6,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import devendrn.ecb.client.EcApplication
 import devendrn.ecb.client.ui.auth.LoginViewModel
+import devendrn.ecb.client.ui.home.HomeViewModel
+import devendrn.ecb.client.ui.news.NewsViewModel
 import devendrn.ecb.client.ui.profile.ProfileViewModel
 
 object AppViewModelProvider {
@@ -18,7 +20,18 @@ object AppViewModelProvider {
         }
         initializer {
             LoginViewModel(
+                ecApplication().container.ecRepository,
                 ecApplication().container.networkManager
+            )
+        }
+        initializer {
+            HomeViewModel(
+                ecApplication().container.ecRepository
+            )
+        }
+        initializer {
+            NewsViewModel(
+                ecApplication().container.ecRepository
             )
         }
     }

@@ -1,4 +1,4 @@
-package devendrn.ecb.client.navigation
+package devendrn.ecb.client.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,6 @@ enum class EcTopLevelDestination(
     val iconOutlined: ImageVector
 ) {
     HOME(R.string.home, Icons.Filled.Home, Icons.Outlined.Home),
-    NEWS(R.string.alert, Icons.Filled.Email, Icons.Outlined.Email),
+    NEWS(R.string.ktu_news, Icons.Filled.Email, Icons.Outlined.Email),
     PROFILE(R.string.profile, Icons.Filled.AccountCircle, Icons.Outlined.AccountCircle),
 }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import devendrn.ecb.client.R
@@ -26,6 +26,7 @@ import devendrn.ecb.client.data.ProfileDetails
 import devendrn.ecb.client.network.NetworkUrl
 import devendrn.ecb.client.ui.components.CardListItem
 import devendrn.ecb.client.ui.components.EcCard
+import devendrn.ecb.client.ui.theme.EcTheme
 
 @Composable
 fun EcProfile(
@@ -42,7 +43,6 @@ fun EcProfile(
             profile.name,
             profile.branch,
             profile.semesterNo,
-            profile.roll,
             profile.picUrl
         )
         val listItems = ProfileDestination.entries
@@ -60,11 +60,10 @@ fun EcProfile(
 }
 
 @Composable
-fun ProfileCardItem(
+private fun ProfileCardItem(
     name: String,
     branch: String,
     semester: Int,
-    roll: String,
     profilePicUrl: String = "",
     modifier: Modifier = Modifier
 ) {
@@ -82,7 +81,7 @@ fun ProfileCardItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(CircleShape)
+                    .clip(MaterialTheme.shapes.medium)
             )
             Column(
                 modifier = Modifier
@@ -96,14 +95,13 @@ fun ProfileCardItem(
                 Text(
                     text = "$branch Semester $semester"
                 )
-                Text(roll)
             }
         }
     }
 }
 
 @Composable
-fun LoginActionsItem(
+private fun LoginActionsItem(
     username: String,
     onSignOutClick: () -> Unit,
     onChangePassClick: () -> Unit,
@@ -140,5 +138,18 @@ fun LoginActionsItem(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ProfileCardPreview() {
+    EcTheme {
+        ProfileCardItem(
+            name = "Maxim Nausea",
+            branch = "B.Tech CAT",
+            semester = 4,
+            profilePicUrl = "https://photos.costume-works.com/thumbs/monster_cat.jpg"
+        )
     }
 }

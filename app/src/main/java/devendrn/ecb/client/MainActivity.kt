@@ -29,7 +29,8 @@ class MainActivity : ComponentActivity() {
             ) {
                 EcApp(
                     isLoggedIn = viewModel.isLoggedIn.collectAsState().value,
-                    networkManager = appContainer.networkManager
+                    networkManager = appContainer.networkManager,
+                    ecRepository = appContainer.ecRepository
                 )
             }
         }

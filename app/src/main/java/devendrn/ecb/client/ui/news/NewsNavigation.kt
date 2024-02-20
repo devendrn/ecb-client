@@ -1,5 +1,6 @@
 package devendrn.ecb.client.ui.news
 
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,13 +13,17 @@ const val NEWS_START_ROUTE = "news/start"
 
 fun NavController.navigateToNews(topLevelNavOptions: NavOptions) = navigate(NEWS_ROUTE, topLevelNavOptions)
 
-fun NavGraphBuilder.newsScreenRoute() {
+fun NavGraphBuilder.newsScreenRoute(
+    newsViewModel: NewsViewModel
+) {
     navigation(
         route = NEWS_ROUTE,
         startDestination = NEWS_START_ROUTE
     ) {
         composable(route = NEWS_START_ROUTE) {
-            ECBNews()
+            ECBNews(
+                newsViewModel.ktuAnnouncements.collectAsState().value
+            )
         }
     }
 }

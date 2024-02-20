@@ -3,6 +3,7 @@ package devendrn.ecb.client.ui.home.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,9 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import devendrn.ecb.client.R
-import devendrn.ecb.client.data.TimeTable
+import devendrn.ecb.client.model.Day
+import devendrn.ecb.client.model.TimeTable
+import devendrn.ecb.client.ui.theme.EcTheme
 
 
 @Composable
@@ -48,13 +52,10 @@ fun TimetableItem(
             containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp),
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         ),
-        modifier = modifier
-            .padding(horizontal = 10.dp, vertical = 5.dp)
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
-                .padding(10.dp)
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioNoBouncy,
@@ -63,7 +64,8 @@ fun TimetableItem(
                 )
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.DateRange,
@@ -87,9 +89,21 @@ fun TimetableItem(
                     )
                 }
             }
-            timetable.map.forEach { entry ->
-                if (isExpanded || timetable.currentDay == entry.key) {
-                    TimetableRow("${entry.key.firstChar()}", entry.value, Modifier.height(40.dp))
+            Divider()
+            Text(
+                text = "${timetable.currentDay.word}, ${timetable.currentMonth} ${timetable.currentDate}",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(10.dp)
+            )
+            Divider()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                timetable.map.forEach { entry ->
+                    if (isExpanded || timetable.currentDay == entry.key) {
+                        TimetableRow("${entry.key.firstChar()}", entry.value)
+                    }
                 }
             }
         }
@@ -104,11 +118,12 @@ private fun TimetableRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(2.dp)
+        modifier = modifier.height(35.dp)
     ) {
         Text(
             text = day,
             textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.width(32.dp)
         )
         Card(
@@ -119,12 +134,13 @@ private fun TimetableRow(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
+                modifier = Modifier.padding(vertical = 0.dp, horizontal = 6.dp)
             ) {
                 subjects.forEachIndexed { index, subject ->
                     Text(
                         text = subject,
                         modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.labelLarge,
                         textAlign = TextAlign.Center
                     )
                     if (index < subjects.size - 1) {
@@ -132,11 +148,33 @@ private fun TimetableRow(
                             color = MaterialTheme.colorScheme.surfaceVariant,
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .width(2.dp)
+                                .width(1.dp)
                         )
                     }
                 }
             }
         }
+    }
+}
+
+
+@Preview
+@Composable
+fun TimetablePrev() {
+    EcTheme {
+        TimetableItem(
+            timetable = TimeTable(
+                currentDate = 17,
+                currentDay = Day.MON,
+                currentMonth = "June",
+                map = mapOf(
+                    Day.MON to listOf("DSP", "DSP", "LIC", "MOE", "ADC", "CS"),
+                    Day.TUE to listOf("ADC", "ADC", "DM", "ADC", "MOE", "DSP"),
+                    Day.WED to listOf("MOE", "LIC", "ADC", "CS", "DSP", "DM"),
+                    Day.THU to listOf("CS", "ADC", "LIC", "LIC", "MOE", "DSP"),
+                    Day.FRI to listOf("DM", "ADC", "MOE", "MOE", "ADC", "ADC")
+                )
+            )
+        )
     }
 }

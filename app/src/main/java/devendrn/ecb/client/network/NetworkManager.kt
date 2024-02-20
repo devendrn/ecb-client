@@ -8,6 +8,7 @@ import devendrn.ecb.client.data.SESSION
 import devendrn.ecb.client.data.USERNAME
 import devendrn.ecb.client.database.dao.UserDao
 import devendrn.ecb.client.database.model.UserEntity
+import devendrn.ecb.client.network.api.KtuResultApi
 import devendrn.ecb.client.network.model.NetworkCredential
 import devendrn.ecb.client.network.model.NetworkLoginResponse
 import kotlinx.coroutines.flow.Flow
@@ -19,11 +20,13 @@ class NetworkManager(
     private val context: Context,
     private val userDao: UserDao
 ) {
-    private val client: NetworkClient = NetworkClient()
+    private val client: NetworkClient = NetworkClient(context)
     private var loginCredential: NetworkCredential = NetworkCredential("", "", "")
 
     val activity = client.activityUrl
-    val isOnline = NetworkStatus(context).isOnline
+    val isOnline = client.isOnline
+
+    val ktuApi = KtuResultApi()
 
     @SuppressLint("SimpleDateFormat")
     val lastUpdateTimeString: Flow<String> = client.lastUpdateTime.map { time ->
@@ -62,7 +65,12 @@ class NetworkManager(
         // check if login is required
         if (res.url().toString() == NetworkUrl.USER_LOGIN) {
             Log.d("NETWORK MANAGER","GET PAGE: SESSION EXPIRED!")
-            /* TODO  Handle login */
+
+            when(login(loginCredential.username, loginCredential.password)) {
+                NetworkLoginResponse.SUCCESS -> Log.d("NETWORK MANAGER", "AUTO LOGIN SUCCESS")
+                NetworkLoginResponse.NETWORK_ERROR -> Log.d("NETWORK MANAGER", "AUTO LOGIN FAILED - NETWORK ERROR")
+                else -> Log.d("NETWORK MANAGER", "AUTO LOGIN FAILED - INVALIDATED CREDENTIAL")
+            }
         }
 
         return res.parse()

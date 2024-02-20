@@ -2,20 +2,22 @@ package devendrn.ecb.client.network.scrapper.parser
 
 import devendrn.ecb.client.network.NetworkManager
 import devendrn.ecb.client.network.NetworkUrl
-import devendrn.ecb.client.network.scrapper.model.Fraction
 import devendrn.ecb.client.network.scrapper.model.Subject
+import devendrn.ecb.client.network.scrapper.model.SubjectPageDetails
 import org.jsoup.nodes.Document
 
 const val SUBJECTS_URL = "${NetworkUrl.HOME}student/subject"
 
-fun NetworkManager.getSubjectsData(): Map<String, Subject> {
-    return getSubjectsData(getPage(SUBJECTS_URL))
+fun NetworkManager.getSubjectsData(semesterNo: Int? = null): SubjectPageDetails {
+    // semester id = 37 (I) - 44 (VIII)
+    val semId: Int? = semesterNo?.plus(36)
+
+    return getSubjectsData(getPage("$SUBJECTS_URL?sem_id=${semId?:""}"))
 }
 
-private fun getSubjectsData(doc: Document): Map<String, Subject> {
+private fun getSubjectsData(doc: Document): SubjectPageDetails {
     val subjects = mutableMapOf<String, Subject>()
 
-    /* TODO - save this number */
     val semesterNo = when (
         doc.select("select#sem_id [selected]").text()
             .substringBefore(" ")
@@ -51,21 +53,14 @@ private fun getSubjectsData(doc: Document): Map<String, Subject> {
             teacher = it.child(3).text()
                 .replace(".", " ")
                 .capitalizeAllWords(),
-            attendance = Fraction(
-                attendanceString
-                    .substringBefore("/")
-                    .toInt(),
-                attendanceString
-                    .substringAfter("/")
-                    .toInt()
-            ),
+            attendance = attendanceString,
             pageId = it.child(1).child(0).attr("href")
                 .substringAfterLast("/")
                 .toInt()
         )
     }
 
-    return subjects
+    return SubjectPageDetails(semesterNo, subjects)
 }
 
 private fun String.capitalizeAllWords(): String {

@@ -57,7 +57,7 @@ fun StatusIndicator(
     val isLoading = activity != null
     if (isLoading) {
         iconVector = Icons.Outlined.Autorenew
-        message = "student/attendance..."
+        message = activity?: " - "
     } else if (isOnline) {
         iconVector = Icons.Outlined.Bedtime
         message = "Idle"

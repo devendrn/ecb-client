@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,30 +63,20 @@ fun EcLoginScreen(
     onUsernameUpdate: (String) -> Unit,
     onPasswordUpdate: (String) -> Unit,
     onSignInClick: () -> Unit,
-    onForgotPassClick: () -> Unit,
     onErrorDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    var showForgetPasswordDialog by remember { mutableStateOf(false) }
 
     if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = onErrorDismiss,
-            icon = { Icon(Icons.Outlined.Cancel, contentDescription = null) },
-            title = {
-                Text(stringResource(R.string.network_error))
-            },
-            text = {
-                Text(stringResource(R.string.internet_connectivity_warning), textAlign = TextAlign.Center)
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = onErrorDismiss
-                ) {
-                    Text(stringResource(R.string.okay))
-                }
-            }
+        ErrorDialog(
+            onErrorDismiss = onErrorDismiss
+        )
+    } else if (showForgetPasswordDialog) {
+        ForgotPassDialog(
+            onDismiss = { showForgetPasswordDialog = false }
         )
     }
 
@@ -182,7 +173,7 @@ fun EcLoginScreen(
                     .fillMaxWidth()
             ) {
                 TextButton(
-                    onClick = onForgotPassClick
+                    onClick = { showForgetPasswordDialog = true }
                 ) {
                     Text(stringResource(R.string.forgot_pass))
                 }
@@ -218,6 +209,55 @@ fun SignInButton(
     }
 }
 
+@Composable
+fun ErrorDialog(
+    onErrorDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onErrorDismiss,
+        icon = { Icon(Icons.Outlined.Cancel, contentDescription = null) },
+        title = {
+            Text(stringResource(R.string.network_error))
+        },
+        text = {
+            Text(stringResource(R.string.internet_connectivity_warning), textAlign = TextAlign.Center)
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onErrorDismiss
+            ) {
+                Text(stringResource(R.string.okay))
+            }
+        }
+    )
+}
+
+@Composable
+fun ForgotPassDialog(
+    onDismiss: () -> Unit
+) {
+    val uriHandler = LocalUriHandler.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Forgot password")
+        },
+        text = {
+            Text("If you don't remember your etlab password, then reset it from etlab webpage.")
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    uriHandler.openUri("https://tkmce.etlab.in/user/resetpassword")
+                    onDismiss()
+                }
+            ) {
+                Text("Reset password")
+            }
+        }
+    )
+}
+
 @Preview
 @Composable
 fun LoginPreview() {
@@ -236,9 +276,25 @@ fun LoginPreview() {
                 onUsernameUpdate = {},
                 onPasswordUpdate = {},
                 onSignInClick = {},
-                onForgotPassClick = {},
                 onErrorDismiss = {}
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun ErrorDialogPreview() {
+    EcTheme {
+        ErrorDialog { }
+    }
+}
+
+
+@Preview
+@Composable
+fun ForgotPassDialogPreview() {
+    EcTheme {
+        ForgotPassDialog { }
     }
 }

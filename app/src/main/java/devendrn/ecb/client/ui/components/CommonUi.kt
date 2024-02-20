@@ -105,14 +105,15 @@ fun ValueListCard(
             Box(
                 contentAlignment = Alignment.Center
             ) {
+                val percent = if (total == 0) 0 else (value * 100) / total
                 CircularProgressIndicator(
-                    progress = value / total.toFloat(),
+                    progress = percent * 0.01f,
                     modifier = Modifier.size(
                         if (showPercent) 50.dp else 25.dp
                     )
                 )
                 if (showPercent) {
-                    Text("${(value * 100) / total}")
+                    Text("$percent")
                 }
             }
         }

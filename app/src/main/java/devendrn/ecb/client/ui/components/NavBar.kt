@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import devendrn.ecb.client.navigation.EcTopLevelDestination
+import devendrn.ecb.client.ui.navigation.EcTopLevelDestination
 import devendrn.ecb.client.ui.theme.EcTheme
 
 @Composable
@@ -32,9 +32,8 @@ fun EcNavBar(
                         contentDescription = stringResource(item.titleId)
                     )
                 },
-                label = if (isSelected) {
-                    { Text(stringResource(item.titleId)) }
-                } else null,
+                label = { Text(stringResource(item.titleId)) },
+                alwaysShowLabel = false,
                 selected = isSelected,
                 onClick = { onNavigateToDestination(item) }
             )

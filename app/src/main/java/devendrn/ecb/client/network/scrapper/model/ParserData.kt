@@ -9,6 +9,11 @@ data class Subject(
     val name: String,
     val abbr: String,
     val teacher: String,
-    val attendance: Fraction,
+    val attendance: String,
     val pageId: Int
+)
+
+data class SubjectPageDetails(
+    val currentSemester: Int,
+    val subjects: Map<String, Subject>
 )

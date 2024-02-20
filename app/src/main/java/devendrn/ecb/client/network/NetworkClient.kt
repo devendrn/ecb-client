@@ -1,5 +1,6 @@
 package devendrn.ecb.client.network
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jsoup.Connection
@@ -11,7 +12,11 @@ private const val USER_AGENT = "Mozilla"
 private const val TIMEOUT_MS = 20000
 const val SESSION_ID = "TKMSESSIONID"
 
-class NetworkClient {
+class NetworkClient(
+    context: Context,
+) {
+    val isOnline = NetworkStatus(context).isOnline
+
     val activityUrl: MutableStateFlow<String?> = MutableStateFlow(null)
 
     // TODO - store last update time in user database
@@ -40,11 +45,15 @@ class NetworkClient {
             conn.cookie(SESSION_ID, sessionId)
         }
 
-        val response = conn.execute()
-
-        updateLastTime()
-        activityUrl.value = null
-        return response
+        try {
+            val response = conn.execute()
+            updateLastTime()
+            activityUrl.value = null
+            return response
+        } catch (e: Exception) {  // network error
+            activityUrl.value = null
+            throw e
+        }
     }
 
     fun post(
@@ -75,7 +84,7 @@ class NetworkClient {
             null
         }
 
-        updateLastTime()
+        if (response != null) updateLastTime()
         activityUrl.value = null
         return response
     }

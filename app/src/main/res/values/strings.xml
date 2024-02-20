@@ -21,7 +21,7 @@
     <string name="about">About</string>
     <string name="home">Home</string>
     <string name="details">Details</string>
-    <string name="alert">Alert</string>
+    <string name="ktu_news">KTU News</string>
     <string name="timetable">Timetable</string>
     <string name="navigate_back">Navigate back</string>
     <string name="no_results_pub">No results published</string>
@@ -29,7 +29,7 @@
     <string name="source_code">Source Code</string>
     <string name="license">License</string>
     <string name="report_bug">Report Bug</string>
-    <string name="main_developer">Main Developer</string>
+    <string name="developer">Developer</string>
     <string name="version">Version</string>
     <string name="not_implemented">Not implemented</string>
     <string name="news_incomplete">TKMCE/KTU notifications will appear here</string>
@@ -37,4 +37,5 @@
     <string name="network_error">Network error</string>
     <string name="internet_connectivity_warning">Make sure you are connected to the internet.</string>
     <string name="okay">Okay</string>
+    <string name="ktu_results">KTU Results</string>
 </resources>
